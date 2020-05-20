@@ -4,7 +4,7 @@ public class Adhoc {
 
     public static void main(String[] args) {
 
-        World world = new World(100, 100);
+        World world = new World(1000, 1000);
 
     }
 }

@@ -24,32 +24,33 @@ public class CreateFrame extends JFrame implements Runnable {
         System.out.println(t.getName());
     }
 
-    public void creatingCircles(int x,int y)
-    {
-        myCircle = new Circles(x,y);
+    public void creatingCircles(int x, int y) {
+        myCircle = new Circles(x, y);
+        myCircle.setS((x+y) /2);
         circleList.add(myCircle);
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        if(circleList != null)
-        for (Circles myCircle : circleList) {
-            g.setColor(myCircle.getC());
-            g.fillOval(myCircle.getX(), myCircle.getY(), 20, 20);
-        }
+
+        if (circleList.size() > 0)
+            for (Circles myCircle : circleList) {
+                g.setColor(myCircle.getC());
+                g.fillOval(myCircle.getX(), myCircle.getY(), 20, 20);
+            }
     }
 
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             try {
                 Thread.sleep(100);
-                for (Circles myCircle:circleList
-                ) {
-                    myCircle.move(myCircle.getS());
-                }
+                if (circleList.size() > 0)
+                    for (Circles myCircle : circleList) {
+                        myCircle.move(myCircle.getS());
+                    }
                 repaint();
             } catch (Exception e) {
                 // TODO: handle exception
