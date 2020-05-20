@@ -32,10 +32,9 @@ public class CreateFrame extends JFrame implements Runnable {
 
     @Override
     public void paint(Graphics g) {
-
         super.paint(g);
-        for (Circles myCircle : circleList
-        ) {
+        if(circleList != null)
+        for (Circles myCircle : circleList) {
             g.setColor(myCircle.getC());
             g.fillOval(myCircle.getX(), myCircle.getY(), 20, 20);
         }
