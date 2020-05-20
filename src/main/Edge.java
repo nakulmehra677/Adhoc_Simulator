@@ -1,6 +1,6 @@
 package main;
 
 public class Edge {
-    private Node startNode, endNode;
+    private Host startHost, endHost;
     private float distance;
 }
