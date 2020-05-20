@@ -2,6 +2,7 @@ package main;
 
 import javafx.scene.shape.Circle;
 import main.models.Coordinates;
+import main.simulator.CreateFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +16,7 @@ public class World {
     private int sizeX;
     private int sizeY;
     private Random random;
+    private CreateFrame createFrame;
 
     public World(int sizeX, int sizeY) {
         this.sizeX = sizeX;
@@ -23,7 +25,7 @@ public class World {
 
 
         List<Host> hosts = createHosts(10);
-
+        createFrame = new CreateFrame(hosts.size());
 //        Play g = new Play();
 //        g.setLocation(80, 40);
 //        g.setSize(1200, 600);
@@ -37,7 +39,7 @@ public class World {
                 if (xCordNew > 0 && xCordNew < sizeX && yCordNew > 0 && yCordNew < sizeY) {
                     hosts.get(j).setCoordinates(new Coordinates(xCordNew, yCordNew));
                 }
-
+                createFrame.creatingCircles(hosts.get(j).getCoordinates().getX(),hosts.get(j).getCoordinates().getY());
                 System.out.println(hosts.get(j).getId() + "->" +
                         hosts.get(j).getCoordinates().getX() + " " + hosts.get(j).getCoordinates().getY());
             }
