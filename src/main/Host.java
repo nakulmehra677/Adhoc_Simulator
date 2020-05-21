@@ -47,7 +47,9 @@ public class Host {
     }
 
     public void setCoordinates(Coordinates coordinates) {
+        Signal.changePosition(id, coordinates, this.coordinates);
         this.coordinates = coordinates;
+
     }
 
     public int getMovementX() {

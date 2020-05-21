@@ -18,7 +18,7 @@ public class World {
         random = new Random();
 
 
-        List<Host> hosts = createHosts(50);
+        List<Host> hosts = createHosts(200);
 
         JFrame jFrame = new JFrame();
         jFrame.setVisible(true);
@@ -35,8 +35,8 @@ public class World {
         List<Host> hosts = new ArrayList<>();
 
         for (int i = 0; i < totalHosts; i++) {
-            int xCoord = random.nextInt(sizeX);
-            int yCoord = random.nextInt(sizeY);
+            int xCoord = random.nextInt(sizeX - 100);
+            int yCoord = random.nextInt(sizeY - 100);
 
             int movementX = random.nextBoolean() ? 1 : -1;
             int movementY = random.nextBoolean() ? 1 : -1;
