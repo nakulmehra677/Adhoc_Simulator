@@ -11,15 +11,19 @@ public class Host {
     private int range;
     private int worldXRange = 10;
     private int worldYRange = 10;
+    private int movementX, movementY;
 
     private List<Edge> nearbyNodes;
     private List<String> friendNodes;
 
 
-    public Host(int id, Coordinates coordinates, int range) {
+    public Host(int id, Coordinates coordinates, int range, int movementX, int movementY) {
         setId(id);
         setRange(range);
         setCoordinates(coordinates);
+
+        this.movementX = movementX;
+        this.movementY = movementY;
     }
 
     public int getId() {
@@ -44,5 +48,21 @@ public class Host {
 
     public void setCoordinates(Coordinates coordinates) {
         this.coordinates = coordinates;
+    }
+
+    public int getMovementX() {
+        return movementX;
+    }
+
+    public int getMovementY() {
+        return movementY;
+    }
+
+    public void setMovementX(int movementX) {
+        this.movementX = movementX;
+    }
+
+    public void setMovementY(int movementY) {
+        this.movementY = movementY;
     }
 }
