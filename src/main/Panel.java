@@ -7,52 +7,83 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Panel extends JPanel implements ActionListener {
 
     private double frameSizeX, frameSizeY;
-    private int circleRadius = 10;
-    private List<Host> hosts;
+    private int circleRadius = 40;
     Timer t = new Timer(60, this);
     private Random random;
-    private int range = 80;
+    private List<Integer> path;
 
     public Panel(int frameSizeX, int frameSizeY, List<Host> hosts) {
         this.frameSizeX = frameSizeX;
         this.frameSizeY = frameSizeY;
 
-        this.hosts = hosts;
+        path = new ArrayList<>();
+        path.add(0);
+        path.add(1);
+        path.add(2);
+        path.add(3);
+        path.add(4);
+        path.add(5);
+        path.add(6);
+        path.add(7);
+        path.add(8);
+        path.add(9);
+        path.add(10);
+        path.add(11);
+        path.add(12);
+        path.add(13);
+        path.add(14);
+
     }
 
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        for (int i = 0; i < hosts.size(); i++) {
+        for (int i = 0; i < World.hosts.size(); i++) {
 
-            int x = hosts.get(i).getCoordinates().getX();
-            int y = hosts.get(i).getCoordinates().getY();
+            int x = World.hosts.get(i).getCoordinates().getX();
+            int y = World.hosts.get(i).getCoordinates().getY();
 
-            g.setColor(Color.red);
+            if (World.firstNode == i || World.secondNode == i) {
+                g.setColor(Color.blue);
+            } else {
+                g.setColor(Color.green);
+            }
+
             Graphics2D g2 = (Graphics2D) g;
-            Ellipse2D circle = new Ellipse2D.Double(x, y, circleRadius, circleRadius);
+            Ellipse2D circle = new Ellipse2D.Double(
+                    x - circleRadius / 2, y - circleRadius / 2, circleRadius, circleRadius);
 
             g2.fill(circle);
 
-            for (int p = x - range; p < x + range + 1; p++) {
-                for (int q = y - range; q < y + range + 1; q++) {
-                    if (p >= 0 && p < frameSizeX && q >= 0 && q < frameSizeY) {
-                        if (Signal.signal[p][q] != null) {
-                            g.setColor(Color.black);
-                            g.drawLine(x + circleRadius / 2, y + circleRadius / 2,
-                                    p + circleRadius / 2, q + circleRadius / 2);
-                        }
+            for (int p = 0; p < World.hosts.get(i).getNearbyNodes().size(); p++) {
+                Host h = World.hosts.get(i).getNearbyNodes().get(p);
+                int coordinatesX = h.getCoordinates().getX();
+                int coordinatesY = h.getCoordinates().getY();
+
+                g.setColor(Color.lightGray);
+                if (World.firstNode != -1 && World.secondNode != -1) {
+                    if (path.get(0) == i || h.getId() == path.get(0)) {
+                        System.out.println(i + "->" + p);
+                        g.setColor(Color.black);
                     }
                 }
+                g.drawLine(x, y, coordinatesX, coordinatesY);
+
             }
+
+            g.setColor(Color.black);
+            g.drawString(String.valueOf(World.hosts.get(i).getId()), x, y);
+
         }
+
 
         t.start();
     }
@@ -61,24 +92,32 @@ public class Panel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
 
-        for (int i = 0; i < hosts.size(); i++) {
-            if (hosts.get(i).getCoordinates().getX() <= 0 ||
-                    hosts.get(i).getCoordinates().getX() > frameSizeX - circleRadius) {
-                hosts.get(i).setMovementX(-hosts.get(i).getMovementX());
+        for (int i = 0; i < World.hosts.size(); i++) {
+            if (World.hosts.get(i).getCoordinates().getX() <= 0 ||
+                    World.hosts.get(i).getCoordinates().getX() > frameSizeX - circleRadius) {
+                World.hosts.get(i).setMovementX(-World.hosts.get(i).getMovementX());
             }
 
-            if (hosts.get(i).getCoordinates().getY() <= 0 ||
-                    hosts.get(i).getCoordinates().getY() > frameSizeY - circleRadius) {
-                hosts.get(i).setMovementY(-hosts.get(i).getMovementY());
+            if (World.hosts.get(i).getCoordinates().getY() <= 0 ||
+                    World.hosts.get(i).getCoordinates().getY() > frameSizeY - circleRadius) {
+                World.hosts.get(i).setMovementY(-World.hosts.get(i).getMovementY());
             }
 
             Coordinates coordinates = new Coordinates(
-                    hosts.get(i).getCoordinates().getX() + hosts.get(i).getMovementX(),
-                    hosts.get(i).getCoordinates().getY() + hosts.get(i).getMovementY());
+                    World.hosts.get(i).getCoordinates().getX() + World.hosts.get(i).getMovementX(),
+                    World.hosts.get(i).getCoordinates().getY() + World.hosts.get(i).getMovementY());
 
-            hosts.get(i).setCoordinates(coordinates);
+            World.hosts.get(i).setCoordinates(coordinates);
         }
 
         repaint();
+    }
+
+    public void pause() {
+        t.stop();
+    }
+
+    public void play() {
+        t.start();
     }
 }

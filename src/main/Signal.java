@@ -16,14 +16,5 @@ public class Signal {
             signal[oldCoordinates.getX()][oldCoordinates.getY()] = null;
         }
         signal[newCoordinates.getX()][newCoordinates.getY()] = id;
-
-
-//        for (int i = 0; i < signal.length; i++) {
-//            for (int j = 0; j < signal[0].length; j++) {
-//                System.out.print(signal[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
-//        System.out.println();
     }
 }

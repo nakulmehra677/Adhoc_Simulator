@@ -1,27 +1,33 @@
 package main;
 
+import main.interfaces.NodeListener;
 import main.models.Coordinates;
 
-import java.util.List;
+import java.util.*;
 
 public class Host {
 
     private int id;
     private Coordinates coordinates;
     private int range;
-    private int worldXRange = 10;
-    private int worldYRange = 10;
+    private int worldXRange;
+    private int worldYRange;
     private int movementX, movementY;
+    private NodeListener listener;
 
-    private List<Edge> nearbyNodes;
-    private List<String> friendNodes;
+    private List<Host> nearbyNodes;
 
+    public Host(int id, Coordinates coordinates, int range, int movementX, int movementY,
+                int worldXRange, int worldYRange, NodeListener listener) {
+        this.listener = listener;
+        nearbyNodes = new LinkedList<>();
 
-    public Host(int id, Coordinates coordinates, int range, int movementX, int movementY) {
         setId(id);
         setRange(range);
         setCoordinates(coordinates);
 
+        this.worldXRange = worldXRange;
+        this.worldYRange = worldYRange;
         this.movementX = movementX;
         this.movementY = movementY;
     }
@@ -47,9 +53,9 @@ public class Host {
     }
 
     public void setCoordinates(Coordinates coordinates) {
-        Signal.changePosition(id, coordinates, this.coordinates);
+        listener.locationChanged(id, this.coordinates, coordinates);
         this.coordinates = coordinates;
-
+        checkNearByNodes();
     }
 
     public int getMovementX() {
@@ -66,5 +72,33 @@ public class Host {
 
     public void setMovementY(int movementY) {
         this.movementY = movementY;
+    }
+
+    public List<Host> getNearbyNodes() {
+        return nearbyNodes;
+    }
+
+    public void setNearbyNodes(List<Host> nearbyNodes) {
+        this.nearbyNodes = nearbyNodes;
+    }
+
+    private void checkNearByNodes() {
+
+        List<Host> nodes = new ArrayList<>();
+
+        for (int i = coordinates.getX() - range; i <= coordinates.getX() + range; i++) {
+            for (int j = coordinates.getY() - range; j <= coordinates.getY() + range; j++) {
+
+                if (i >= 0 && i < worldXRange && j >= 0 && j < worldYRange) {
+                    if (Signal.signal[i][j] != null &&
+                            coordinates.getX() != i &&
+                            coordinates.getY() != j) {
+                        nodes.add(World.hosts.get(Signal.signal[i][j]));
+                    }
+                }
+            }
+        }
+
+        setNearbyNodes(nodes);
     }
 }
