@@ -15,7 +15,7 @@ public class Panel extends JPanel implements ActionListener {
 
     private double frameSizeX, frameSizeY;
     private int circleRadius = 40;
-    Timer t = new Timer(60, this);
+    Timer t = new Timer(50, this);
     private Random random;
     private List<Integer> path;
 
@@ -24,22 +24,6 @@ public class Panel extends JPanel implements ActionListener {
         this.frameSizeY = frameSizeY;
 
         path = new ArrayList<>();
-        path.add(0);
-        path.add(1);
-        path.add(2);
-        path.add(3);
-        path.add(4);
-        path.add(5);
-        path.add(6);
-        path.add(7);
-        path.add(8);
-        path.add(9);
-        path.add(10);
-        path.add(11);
-        path.add(12);
-        path.add(13);
-        path.add(14);
-
     }
 
 
@@ -68,23 +52,30 @@ public class Panel extends JPanel implements ActionListener {
                 int coordinatesX = h.getCoordinates().getX();
                 int coordinatesY = h.getCoordinates().getY();
 
-                g.setColor(Color.lightGray);
+                g2.setColor(Color.lightGray);
+                g2.setStroke(new BasicStroke(1));
                 if (World.firstNode != -1 && World.secondNode != -1) {
-                    if (path.get(0) == i || h.getId() == path.get(0)) {
-                        System.out.println(i + "->" + p);
-                        g.setColor(Color.black);
+                    for (int q = 1; q < path.size() - 1; q++) {
+                        if ((i == path.get(q) && h.getId() == path.get(q + 1)) ||
+                                (i == path.get(q) && h.getId() == path.get(q - 1))) {
+                            g2.setColor(Color.black);
+                            g2.setStroke(new BasicStroke(2));
+                        }
                     }
                 }
-                g.drawLine(x, y, coordinatesX, coordinatesY);
+                g2.drawLine(x, y, coordinatesX, coordinatesY);
 
             }
 
-            g.setColor(Color.black);
-            g.drawString(String.valueOf(World.hosts.get(i).getId()), x, y);
+            g2.setColor(Color.black);
+            g2.drawString(String.valueOf(World.hosts.get(i).getId()), x, y);
 
         }
 
-
+        if (World.firstNode != -1 && World.secondNode != -1) {
+            ShortestPath s = new ShortestPath(World.firstNode, World.secondNode);
+            path = s.execute();
+        }
         t.start();
     }
 

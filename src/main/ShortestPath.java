@@ -1,73 +1,105 @@
 package main;
 
+import main.models.Coordinates;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class ShortestPath {
-    static final int V = World.hosts.size();
 
-    int minDistance(int dist[], Boolean sptSet[])
-    {
-        // Initialize min value
-        int min = Integer.MAX_VALUE, min_index = -1;
+    private int src, des, v;
+    private List<Integer> visitedNodes;
+    private boolean[] visited;
+    private double[] distance;
 
-        for (int v = 0; v < V; v++)
-            if (sptSet[v] == false && dist[v] <= min) {
-                min = dist[v];
-                min_index = v;
+    private List<Integer> path;
+
+    private double[][] graph;
+
+
+    public ShortestPath(int src, int des) {
+        this.src = src;
+        this.des = des;
+
+        v = World.hosts.size();
+        visited = new boolean[v];
+        distance = new double[v];
+        path = new ArrayList<>();
+
+        for (int i = 0; i < v; i++) {
+            distance[i] = Integer.MAX_VALUE;
+        }
+        distance[src] = 0;
+
+        graph = new double[v][v];
+        for (int i = 0; i < v; i++) {
+            List<Host> n = World.hosts.get(i).getNearbyNodes();
+
+            for (int j = 0; j < v; j++) {
+                boolean flag = false;
+                for (int k = 0; k < n.size(); k++) {
+                    if (n.get(k).getId() == j) {
+                        Coordinates cord1 = World.hosts.get(i).getCoordinates();
+                        Coordinates cord2 = n.get(k).getCoordinates();
+                        double dis = Math.sqrt(Math.pow(cord1.getX() - cord2.getX(), 2) + Math.pow(cord1.getY() - cord2.getY(), 2));
+
+                        graph[i][j] = dis;
+                    }
+                    flag = true;
+                }
+                if (!flag) {
+                    graph[i][j] = 0;
+                }
             }
-
-        return min_index;
+        }
     }
 
-    // A utility function to print the constructed distance array
-    void printSolution(int dist[])
-    {
-        System.out.println("Vertex \t\t Distance from Source");
-        for (int i = 0; i < V; i++)
-            System.out.println(i + " \t\t " + dist[i]);
+    private int findMinVertex(double[] distance, boolean[] visited) {
+        int minVertex = -1;
+
+        for (int i = 0; i < distance.length; i++) {
+            if (!visited[i] && (minVertex == -1 || distance[i] < distance[minVertex])) {
+                minVertex = i;
+            }
+        }
+        return minVertex;
     }
 
-    // Function that implements Dijkstra's single source shortest path
-    // algorithm for a graph represented using adjacency matrix
-    // representation
-    void dijkstra(int src, int des)
-    {
-        int dist[] = new int[V]; // The output array. dist[i] will hold
-        // the shortest distance from src to i
+    public List<Integer> execute() {
 
-        // sptSet[i] will true if vertex i is included in shortest
-        // path tree or shortest distance from src to i is finalized
-        Boolean sptSet[] = new Boolean[V];
+        path.add(src);
+        for (int i = 0; i < v - 1; i++) {
+            int minVertex = findMinVertex(distance, visited);
+            visited[minVertex] = true;
 
-        // Initialize all distances as INFINITE and stpSet[] as false
-        for (int i = 0; i < V; i++) {
-            dist[i] = Integer.MAX_VALUE;
-            sptSet[i] = false;
+            for (int j = 0; j < v; j++) {
+                if (graph[minVertex][j] != 0 && !visited[j] && distance[minVertex] != Integer.MAX_VALUE) {
+                    double newDist = distance[minVertex] + graph[minVertex][j];
+
+                    if (newDist < distance[j]) {
+                        distance[j] = newDist;
+
+                        if (j == des)
+                            path.add(minVertex);
+
+                    }
+                }
+            }
         }
 
-        // Distance of source vertex from itself is always 0
-        dist[src] = 0;
+        path.add(des);
 
-        // Find shortest path for all vertices
-        for (int count = 0; count < V - 1; count++) {
-            // Pick the minimum distance vertex from the set of vertices
-            // not yet processed. u is always equal to src in first
-            // iteration.
-            int u = minDistance(dist, sptSet);
-
-            // Mark the picked vertex as processed
-            sptSet[u] = true;
-
-            // Update dist value of the adjacent vertices of the
-            // picked vertex.
-//            for (int v = 0; v < V; v++)
-
-                // Update dist[v] only if is not in sptSet, there is an
-                // edge from u to v, and total weight of path from src to
-                // v through u is smaller than current value of dist[v]
-//                if (!sptSet[v] && graph[u][v] != 0 && dist[u] != Integer.MAX_VALUE && dist[u] + graph[u][v] < dist[v])
-//                    dist[v] = dist[u] + graph[u][v];
+        for (int i = 0; i < path.size(); i++) {
+            System.out.println(path.get(i));
         }
+        System.out.println();
 
-        // print the constructed distance array
-        printSolution(dist);
+        return path;
     }
 }
