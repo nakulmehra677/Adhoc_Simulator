@@ -15,7 +15,7 @@ public class World implements NodeListener {
     private int sizeX;
     private int sizeY;
     private Random random;
-    public static List<Host> hosts;
+    public static List<Node> nodes;
     private JFrame jFrame;
     private Panel panel;
     private JMenuBar jMenuBar;
@@ -29,7 +29,7 @@ public class World implements NodeListener {
         random = new Random();
 
 
-        hosts = createHosts(20);
+        nodes = createHosts(20);
 
         Thread thread = new Thread(() -> {
             System.out.println("Thread Running");
@@ -42,7 +42,7 @@ public class World implements NodeListener {
             jFrame.setLocation(60, 30);
             jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            panel = new Panel(sizeX, sizeY, hosts);
+            panel = new Panel(sizeX, sizeY, nodes);
             panel.setBackground(Color.white);
             panel.setVisible(true);
 
@@ -88,10 +88,10 @@ public class World implements NodeListener {
     private void addMenus() {
         JMenu firstNodeMenu = new JMenu("First Node");
 
-        for (int i = 0; i < hosts.size(); i++) {
-            JMenuItem jMenuItem = new JMenuItem(String.valueOf(hosts.get(i).getId()));
+        for (int i = 0; i < nodes.size(); i++) {
+            JMenuItem jMenuItem = new JMenuItem(String.valueOf(nodes.get(i).getId()));
             int finalI = i;
-            jMenuItem.addActionListener(e -> firstNode = hosts.get(finalI).getId());
+            jMenuItem.addActionListener(e -> firstNode = nodes.get(finalI).getId());
             firstNodeMenu.add(jMenuItem);
         }
 
@@ -100,10 +100,10 @@ public class World implements NodeListener {
 
         JMenu secondNodeMenu = new JMenu("Second Node");
 
-        for (int i = 0; i < hosts.size(); i++) {
-            JMenuItem jMenuItem = new JMenuItem(String.valueOf(hosts.get(i).getId()));
+        for (int i = 0; i < nodes.size(); i++) {
+            JMenuItem jMenuItem = new JMenuItem(String.valueOf(nodes.get(i).getId()));
             int finalI = i;
-            jMenuItem.addActionListener(e -> secondNode = hosts.get(finalI).getId());
+            jMenuItem.addActionListener(e -> secondNode = nodes.get(finalI).getId());
             secondNodeMenu.add(jMenuItem);
         }
 
@@ -111,8 +111,8 @@ public class World implements NodeListener {
     }
 
 
-    public List<Host> createHosts(int totalHosts) {
-        hosts = new ArrayList<>();
+    public List<Node> createHosts(int totalHosts) {
+        nodes = new ArrayList<>();
 
         for (int i = 0; i < totalHosts; i++) {
             int xCoord = random.nextInt(sizeX - 100);
@@ -121,12 +121,12 @@ public class World implements NodeListener {
             int movementX = random.nextBoolean() ? 1 : -1;
             int movementY = random.nextBoolean() ? 1 : -1;
 
-            Host host = new Host(i, new Coordinates(xCoord, yCoord),
+            Node node = new Node(i, new Coordinates(xCoord, yCoord),
                     300, movementX, movementY, sizeX, sizeY, this);
-            hosts.add(host);
+            nodes.add(node);
         }
 
-        return hosts;
+        return nodes;
     }
 
     @Override

@@ -3,13 +3,7 @@ package main;
 import main.models.Coordinates;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ShortestPath {
 
@@ -27,7 +21,7 @@ public class ShortestPath {
         this.src = src;
         this.des = des;
 
-        v = World.hosts.size();
+        v = World.nodes.size();
         visited = new boolean[v];
         distance = new double[v];
         path = new ArrayList<>();
@@ -39,13 +33,13 @@ public class ShortestPath {
 
         graph = new double[v][v];
         for (int i = 0; i < v; i++) {
-            List<Host> n = World.hosts.get(i).getNearbyNodes();
+            List<Node> n = World.nodes.get(i).getNearbyNodes();
 
             for (int j = 0; j < v; j++) {
                 boolean flag = false;
                 for (int k = 0; k < n.size(); k++) {
                     if (n.get(k).getId() == j) {
-                        Coordinates cord1 = World.hosts.get(i).getCoordinates();
+                        Coordinates cord1 = World.nodes.get(i).getCoordinates();
                         Coordinates cord2 = n.get(k).getCoordinates();
                         double dis = Math.sqrt(Math.pow(cord1.getX() - cord2.getX(), 2) + Math.pow(cord1.getY() - cord2.getY(), 2));
 
@@ -71,7 +65,7 @@ public class ShortestPath {
         return minVertex;
     }
 
-    public List<Integer> execute() {
+    public double execute() {
 
         path.add(src);
         for (int i = 0; i < v - 1; i++) {
@@ -84,22 +78,11 @@ public class ShortestPath {
 
                     if (newDist < distance[j]) {
                         distance[j] = newDist;
-
-                        if (j == des)
-                            path.add(minVertex);
-
                     }
                 }
             }
         }
 
-        path.add(des);
-
-        for (int i = 0; i < path.size(); i++) {
-            System.out.println(path.get(i));
-        }
-        System.out.println();
-
-        return path;
+        return distance[des];
     }
 }

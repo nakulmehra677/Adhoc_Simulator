@@ -5,19 +5,19 @@ import main.models.Coordinates;
 
 import java.util.*;
 
-public class Host {
+public class Node {
 
-    private int id;
-    private Coordinates coordinates;
-    private int range;
-    private int worldXRange;
-    private int worldYRange;
-    private int movementX, movementY;
+    private int id;                     // unique identity of node
+    private Coordinates coordinates;    // position of node in x-y coordinate
+    private int range;                  // the distance within which a nodes can communicate to another nodes
+    private int worldXRange;            // max horizontal range of world
+    private int worldYRange;            // max vertical range of world
+    private int movementX, movementY;   // movement direction
     private NodeListener listener;
 
-    private List<Host> nearbyNodes;
+    private List<Node> nearbyNodes;
 
-    public Host(int id, Coordinates coordinates, int range, int movementX, int movementY,
+    public Node(int id, Coordinates coordinates, int range, int movementX, int movementY,
                 int worldXRange, int worldYRange, NodeListener listener) {
         this.listener = listener;
         nearbyNodes = new LinkedList<>();
@@ -74,17 +74,17 @@ public class Host {
         this.movementY = movementY;
     }
 
-    public List<Host> getNearbyNodes() {
+    public List<Node> getNearbyNodes() {
         return nearbyNodes;
     }
 
-    public void setNearbyNodes(List<Host> nearbyNodes) {
+    public void setNearbyNodes(List<Node> nearbyNodes) {
         this.nearbyNodes = nearbyNodes;
     }
 
     private void checkNearByNodes() {
 
-        List<Host> nodes = new ArrayList<>();
+        List<Node> nodes = new ArrayList<>();
 
         for (int i = coordinates.getX() - range; i <= coordinates.getX() + range; i++) {
             for (int j = coordinates.getY() - range; j <= coordinates.getY() + range; j++) {
@@ -93,7 +93,7 @@ public class Host {
                     if (Signal.signal[i][j] != null &&
                             coordinates.getX() != i &&
                             coordinates.getY() != j) {
-                        nodes.add(World.hosts.get(Signal.signal[i][j]));
+                        nodes.add(World.nodes.get(Signal.signal[i][j]));
                     }
                 }
             }
